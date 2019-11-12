@@ -119,7 +119,7 @@
 						password: $("#loginPassword").val(),
 					},
 					success: function (c) {
-						if (c == "succcess") {
+						if (c == "success") {
 							swal.fire({
 								type: 'success',
 								title: '登入成功',
@@ -130,13 +130,23 @@
 									window.location.href = "index.html"
 								}
 							)
-						} else {
+						} else if(c == "fail"){
 							Swal.fire({
 								type: 'error',
 								title: '帳號或密碼錯誤!',
 							}).then(
 								function () {
 									$("#loginPassword").val("");
+								}
+							)
+						}else{
+							Swal.fire({
+								type: 'error',
+								title: '帳號不存在',
+							}).then(
+								function () {
+									$("#loginPassword").val("");
+									$("#loginAccount").val("");
 								}
 							)
 						}
