@@ -90,7 +90,7 @@
 								timer: 2000
 							}).then(
 								function () {
-									window.location.href = "member.html"
+									window.location.href = "member.php"
 								}
 							)
 						} else if (e == "error") {
@@ -127,7 +127,7 @@
 								timer: 2000
 							}).then(
 								function () {
-									window.location.href = "index.html"
+									window.location.href = "index.php"
 								}
 							)
 						} else if(c == "fail"){
