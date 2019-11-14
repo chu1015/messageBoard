@@ -5,7 +5,7 @@ session_start();
 $mId = $_SESSION['memberId'];
 $author = $_SESSION['member'];
 $subject = $_REQUEST['subject'];
-$content = $_REQUEST['content'];
+$content = nl2br($_REQUEST['content']);
 // echo $author ,$subject ,$content;
 $sql = "INSERT INTO message(memberId,author,subject,content)"
     . "VALUES (?,?,?,?)";

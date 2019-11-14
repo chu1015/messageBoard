@@ -11,6 +11,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
         integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
         crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
@@ -52,7 +55,6 @@
                             <small>Messages</small>
                         </div> -->
                     </div>
-
                     <div class="my-3 p-3 bg-white rounded box-shadow">
                         <h6 class="border-bottom border-gray pb-2 mb-0">Recent updates</h6>
                         <div id="msg">
@@ -114,10 +116,10 @@
                     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
                 }
             </style>
-
-
-
         </div>
+
+
+    </div>
     </div>
     <!-- 登出script -->
     <script>
@@ -127,10 +129,10 @@
             $.ajax({
                 type: "post",
                 url: "getSession.php",
-               success:function(res){
-                // console.log(res);
-                   memberId = res;
-               } 
+                success: function(res) {
+                    // console.log(res);
+                    memberId = res;
+                }
             })
 
             $.ajax({
@@ -143,7 +145,11 @@
                     let total = JSON.parse(e);
                     console.log(total);
                     $.each(total, function(index, value) {
-                        console.log(memberId);
+                        temp = value["content"];
+                        var brExp = /<br\s*\/?>/;
+                        newTemp = temp.split(brExp);
+                        newTemp =newTemp.join("");
+                        console.log(newTemp);
                         if (value["memberId"] == memberId) {
                             // console.log(memberId);
                             $("#msg").append(`
@@ -152,11 +158,34 @@
                                        <h4><strong class="d-block text-gray-dark">發文者:${value["author"]}</strong></h4>
                                        <h5>主題:${value["subject"]}</h5>
                                        <small style="margin-right=0;">${value["date"]}</small>
-                                       <h5>內容:${value["content"]}</h5>
+                                       <h5>內容:<br>&emsp;&emsp;${value["content"]}</h5>
                                     </h5>
-                                    <button type="button" onclick='upd(${value["id"]})'  class="btn btn-secondary">修改</button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal${value["id"]}" >修改</button>
                                     <button type="button" onclick='del(${value["id"]})' class="btn btn-danger">刪除</button>
                                     </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal${value["id"]}" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">${value["subject"]}</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>內容:</p>
+                                                <textarea style="resize: none;" id="content${value["id"]}" cols="51" rows="6" required>${newTemp}</textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button"  onclick="upd(${value["id"]})" class="btn btn-success"  data-dismiss="modal">確認</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                                     `)
 
                         } else {
@@ -176,47 +205,50 @@
                 }
             })
         })
-        function del(e){
+
+        function del(e) {
             // console.log(e);
             $.ajax({
                 type: "post",
                 url: "delete.php",
                 data: {
-                   del: e,
+                    del: e,
                 },
-                success:function(e){
-                    if(e=="success"){
+                success: function(e) {
+                    if (e == "success") {
                         swal.fire({
-								type: 'success',
-                                title: '留言已刪除',
-                                timer:1000,
-							}).then(
-								function () {
-									window.location.href = "index.php"
-								}
-							)
+                            type: 'success',
+                            title: '留言已刪除',
+                            timer: 1000,
+                        }).then(
+                            function() {
+                                window.location.href = "index.php"
+                            }
+                        )
                     }
                 }
             })
         }
-        function upd(e){
+
+        function upd(e) {
             $.ajax({
                 type: "post",
                 url: "update.php",
                 data: {
-                   del: e,
+                    upd: e,
+                    content:$("#content"+e).val(),
                 },
-                success:function(e){
-                    if(e=="success"){
+                success: function(e) {
+                    if (e == "success") {
                         swal.fire({
-								type: 'success',
-                                title: '留言已修改',
-                                timer:1000,
-							}).then(
-								function () {
-									window.location.href = "index.php"
-								}
-							)
+                            type: 'success',
+                            title: '留言已修改',
+                            timer: 1000,
+                        }).then(
+                            function() {
+                                window.location.href = "index.php"
+                            }
+                        )
                     }
                 }
             })
